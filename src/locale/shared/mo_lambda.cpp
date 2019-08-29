@@ -217,17 +217,6 @@ namespace { // anon
         }
     }
 
-    plural_ptr un_factory(int value,plural_ptr op)
-    {
-        switch(value) {
-        case '!': return plural_ptr(new l_not(op));
-        case '~': return plural_ptr(new bin_not(op));
-        case '-': return plural_ptr(new minus(op));
-        default:
-            return plural_ptr();
-        }
-    }
-
     static inline bool is_in(int v,int *p)
     {
         int len=*p;
@@ -290,19 +279,17 @@ namespace { // anon
     };
 
 
-#define BINARY_EXPR(expr,hexpr,list)                            \
+    #define BINARY_EXPR(expr,hexpr,list)                            \
         plural_ptr expr()                                           \
         {                                                           \
-            plural_ptr op1(hexpr());                                \
-            if(op1.get()==0)                                        \
+            plural_ptr op1,op2;                                     \
+            if((op1=hexpr()).get()==0)                              \
                 return plural_ptr();                                \
             while(is_in(t.next(),list)) {                           \
                 int o=t.get();                                      \
-                plural_ptr op2(hexpr());                            \
-                if(op2.get()==0)                                    \
+                if((op2=hexpr()).get()==0)                          \
                     return plural_ptr();                            \
-                plural_ptr opt(bin_factory(o,op1,op2));             \
-                op1=opt; \
+                op1=bin_factory(o,op1,op2);                         \
             }                                                       \
             return op1;                                             \
         }
@@ -325,10 +312,10 @@ namespace { // anon
 
         plural_ptr value_expr()
         {
+            plural_ptr op;
             if(t.next()=='(') {
                 t.get();
-                plural_ptr op(cond_expr());
-                if(op.get()==0)
+                if((op=cond_expr()).get()==0)
                     return plural_ptr();
                 if(t.get()!=')')
                     return plural_ptr();
@@ -348,11 +335,11 @@ namespace { // anon
 
         plural_ptr un_expr()
         {
+            plural_ptr op1;
             static int level_unary[]={3,'-','!','~'};
             if(is_in(t.next(),level_unary)) {
                 int op=t.get();
-                plural_ptr op1(un_expr());
-                if(op1.get()==0) 
+                if((op1=un_expr()).get()==0) 
                     return plural_ptr();
                 switch(op) {
                 case '-': 
@@ -383,24 +370,22 @@ namespace { // anon
 
         plural_ptr cond_expr()
         {
-           plural_ptr cond(l1());
-            if(cond.get()==0)
+            plural_ptr cond,case1,case2;
+            if((cond=l1()).get()==0)
                 return plural_ptr();
             if(t.next()=='?') {
                 t.get();
-                plural_ptr case1(cond_expr());
-                if(case1.get()==0)
+                if((case1=cond_expr()).get()==0)
                     return plural_ptr();
                 if(t.get()!=':')
                     return plural_ptr();
-                plural_ptr case2(cond_expr());
-                if(case2.get()==0)
+                if((case2=cond_expr()).get()==0)
                     return plural_ptr();
-                return plural_ptr(new conditional(cond,case1,case2));
             }
             else {
                 return cond;
             }
+            return plural_ptr(new conditional(cond,case1,case2));
         }
 
         tokenizer &t;
