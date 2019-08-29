@@ -11,7 +11,7 @@
 #ifndef BOOST_IOSTREAMS_DETAIL_SYSTEM_FAILURE_HPP_INCLUDED
 #define BOOST_IOSTREAMS_DETAIL_SYSTEM_FAILURE_HPP_INCLUDED
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -27,13 +27,11 @@ namespace std { using ::strlen; }
 #endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS
-   #ifndef WIN32_LEAN_AND_MEAN
-      #define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
-   #endif
-   #include <windows.h>
+# define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
+# include <windows.h>
 #else
-   #include <errno.h>
-   #include <string.h>
+# include <errno.h>
+# include <string.h>
 #endif
 
 namespace boost { namespace iostreams { namespace detail {

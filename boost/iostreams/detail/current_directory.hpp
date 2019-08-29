@@ -24,12 +24,10 @@
 #include <boost/iostreams/detail/config/windows_posix.hpp>
 #include <boost/iostreams/detail/system_failure.hpp>
 #ifdef BOOST_IOSTREAMS_WINDOWS
-   #ifndef WIN32_LEAN_AND_MEAN
-      #define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
-   #endif
-   #include <windows.h>
+# define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
+# include <windows.h>
 #else
-   #include <unistd.h>        // sysconf.
+# include <unistd.h>        // sysconf.
 #endif
 
 // Must come last.
