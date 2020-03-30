@@ -25,6 +25,9 @@
 #include <boost/test/detail/suppress_warnings.hpp>
 
 #ifdef _WIN32
+   #ifdef NOAPISET
+      #undef NOAPISET // enable #include <consoleapi2.h> via <windows.h> for SetConsoleTextAttribute() etc.
+   #endif
   #include <windows.h>
 
   #if defined(__MINGW32__) && !defined(COMMON_LVB_UNDERSCORE)
