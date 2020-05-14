@@ -47,9 +47,9 @@ namespace boost { namespace algorithm {
     \brief  Thrown when the input sequence unexpectedly ends
 
 */
-struct hex_decode_error : virtual boost::exception, virtual std::exception {};
-struct not_enough_input : virtual hex_decode_error {};
-struct non_hex_input    : virtual hex_decode_error {};
+struct hex_decode_error : virtual boost::exception, virtual std::exception { ~hex_decode_error() throw() {} };
+struct not_enough_input : virtual hex_decode_error { ~not_enough_input() throw() {} };
+struct non_hex_input    : virtual hex_decode_error { ~non_hex_input() throw() {} };
 typedef boost::error_info<struct bad_char_,char> bad_char;
 
 namespace detail {
