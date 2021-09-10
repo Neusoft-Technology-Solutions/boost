@@ -242,6 +242,18 @@ void epoll_reactor::start_op(int op_type, socket_type descriptor,
 
   mutex::scoped_lock descriptor_lock(descriptor_data->mutex_);
 
+  // Note:    This is a workaround for a reset issue that a null descriptor_data is used in the context
+  // Details: The mutex variable of descriptor_data object is used to guard access of this object.
+  //          However this variable is marked as 0 in epoll_reactor::deregister_descriptor function,
+  //          while the thread is holding the mutex_. In a different thread executing start_op function
+  //          and waiting on this function will find null object when the mutex lock is freed.
+  if( !descriptor_data )
+  {
+    op->ec_ = boost::asio::error::bad_descriptor;
+    post_immediate_completion(op, is_continuation);
+    return;
+  }
+
   if (descriptor_data->shutdown_)
   {
     post_immediate_completion(op, is_continuation);
