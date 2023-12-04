@@ -269,6 +269,7 @@ namespace impl_icu {
             data_(d)
         {
         }
+        ~icu_calendar_facet() {}
         virtual abstract_calendar *create_calendar() const
         {
             return new calendar_impl(data_);

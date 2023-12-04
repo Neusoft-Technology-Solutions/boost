@@ -73,6 +73,8 @@ namespace locale {
 
             }
 
+            ~icu_formatters_cache() {}
+
             typedef enum {
                 fmt_number,
                 fmt_sci,

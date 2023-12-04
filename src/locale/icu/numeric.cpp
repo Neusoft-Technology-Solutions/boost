@@ -124,6 +124,7 @@ public:
         enc_(d.encoding)
     {
     }
+    ~num_format() {}
 protected: 
     
 
@@ -218,6 +219,7 @@ public:
         enc_(d.encoding)
     {
     }
+    ~num_parse() {}
 protected: 
     typedef typename std::num_get<CharType>::iter_type iter_type;
     typedef std::basic_string<CharType> string_type;
