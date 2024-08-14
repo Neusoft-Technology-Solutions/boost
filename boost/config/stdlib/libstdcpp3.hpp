@@ -125,7 +125,26 @@
 //
 #ifdef __clang__
 
-#if __has_include(<experimental/memory_resource>)
+#ifdef _GLIBCXX_RELEASE
+#  define BOOST_LIBSTDCXX_VERSION (_GLIBCXX_RELEASE * 10000 + 100)
+#else
+//
+// We figure out which gcc version issued this std lib
+// by checking which headers are available:
+//
+#if __has_include(<expected>)
+#  define BOOST_LIBSTDCXX_VERSION 120100
+#elif __has_include(<source_location>)
+#  define BOOST_LIBSTDCXX_VERSION 110100
+#elif __has_include(<compare>)
+#  define BOOST_LIBSTDCXX_VERSION 100100
+#elif __has_include(<memory_resource>)
+#  define BOOST_LIBSTDCXX_VERSION 90100
+#elif __has_include(<charconv>)
+#  define BOOST_LIBSTDCXX_VERSION 80100
+#elif __has_include(<variant>)
+#  define BOOST_LIBSTDCXX_VERSION 70100
+#elif __has_include(<experimental/memory_resource>)
 #  define BOOST_LIBSTDCXX_VERSION 60100
 #elif __has_include(<experimental/any>)
 #  define BOOST_LIBSTDCXX_VERSION 50100
@@ -143,6 +162,7 @@
 #  define BOOST_LIBSTDCXX_VERSION 40400
 #elif __has_include(<array>)
 #  define BOOST_LIBSTDCXX_VERSION 40300
+#endif
 #endif
 
 #if (BOOST_LIBSTDCXX_VERSION < 50100)
@@ -311,6 +331,15 @@ extern "C" char *gets (char *__s);
 #endif
 #elif __cplusplus < 201402 || (BOOST_LIBSTDCXX_VERSION < 40900) || !defined(BOOST_LIBSTDCXX11)
 #  define BOOST_NO_CXX14_HDR_SHARED_MUTEX
+#endif
+
+#if BOOST_LIBSTDCXX_VERSION >= 120000
+//
+// Unary function is now deprecated in C++11 and later:
+//
+#if __cplusplus >= 201103L
+#define BOOST_NO_CXX98_FUNCTION_BASE
+#endif
 #endif
 
 //
